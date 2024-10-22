@@ -1,6 +1,0 @@
-fastapi
-celery
-redis
-sqlalchemy
-pydantic
-requests
