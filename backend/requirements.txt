@@ -1,0 +1,11 @@
+fastapi
+celery
+redis
+pydantic
+uvicorn
+sqlalchemy
+aioredis
+websockets
+alembic
+email-validator
+python-multipart
