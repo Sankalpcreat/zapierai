@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from models.task import Task
+from schemas.task import TaskCreate
 
 def get_task_status(db: Session, task_id: int):
     return db.query(Task).filter(Task.id == task_id).first()
@@ -18,7 +19,7 @@ def update_task_status(db: Session, task_id: int, status: str):
         db.refresh(task)
     return task
 
-def create_new_task(db: Session, task_data):
+def create_new_task(db: Session, task_data:TaskCreate):
     task = Task(
         name=task_data.name,
         workflow_id=task_data.workflow_id,
