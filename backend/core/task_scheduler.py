@@ -1,17 +1,19 @@
 from celery_app import celery_app
 
 @celery_app.task(bind=True)
-def run_chained_task(self, task_data):
-    # Example task chaining logic
-    task_1_result = self.app.send_task('tasks.task_1', args=[task_data])
-    task_2_result = task_1_result.get()
-    task_3_result = self.app.send_task('tasks.task_2', args=[task_2_result])
-    return task_3_result.get()
+def run_chained_tasks(self, task_data_list):
+    results = []
+    for task_data in task_data_list:
+        result = self.app.send_task('tasks.image_generation.generate_image_task', args=[task_data['prompt'], task_data['api_key']])
+        results.append(result.get())  
+    return results
+
 
 @celery_app.task(bind=True)
-def parallel_tasks(self, tasks_data):
-    results = []
-    for data in tasks_data:
-        result = self.app.send_task('tasks.parallel_task', args=[data])
-        results.append(result.get())
-    return results
+def run_parallel_tasks(self, tasks_data):
+    parallel_results = []
+    for task_data in tasks_data:
+        result = self.app.send_task('tasks.image_generation.generate_image_task', args=[task_data['prompt'], task_data['api_key']])
+        parallel_results.append(result)
+    
+    return [result.get() for result in parallel_results]  
