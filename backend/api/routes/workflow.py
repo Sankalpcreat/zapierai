@@ -10,15 +10,13 @@ router = APIRouter()
 def create_new_workflow(workflow: WorkflowCreate, db: Session = Depends(get_db)):
     return create_workflow(db, workflow)
 
-
 @router.get("/{workflow_id}", response_model=WorkflowResponse)
 def get_workflow_by_id(workflow_id: int, db: Session = Depends(get_db)):
     workflow = get_workflow(db, workflow_id)
-    if workflow is None:
+    if not workflow:
         raise HTTPException(status_code=404, detail="Workflow not found")
     return workflow
 
-
-@router.get("/")
+@router.get("/", response_model=list[WorkflowResponse])
 def list_all_workflows(db: Session = Depends(get_db)):
     return db.query(Workflow).all()
