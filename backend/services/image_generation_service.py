@@ -1,17 +1,20 @@
-from sqlalchemy.orm import Session
-from models.workflow import Workflow
-from schemas.workflow import WorkflowCreate
+import openai
 
-def create_workflow(db:Session,workflow_data:WorkflowCreate):
-    workflow=Workflow(
-        name=workflow_data.name,
-        description=workflow_data.description,
-        is_active=True
-    )
-    db.add(workflow)
-    db.commit()
-    db.refresh(workflow)
-    return workflow
+def generate_image(prompt: str, api_key: str):
+  
+    openai.api_key = api_key
 
-
-def get_workflow(db:Session,workflow_id:int):
+    try:
+        response = openai.Image.create(
+            prompt=prompt,
+            n=1,
+            size="1024x1024" 
+        )
+        
+        if response['data']:
+            return response['data'][0]['url']  
+        else:
+            raise Exception("No image URL returned.")
+    
+    except Exception as e:
+        raise Exception(f"Error during image generation: {str(e)}")
