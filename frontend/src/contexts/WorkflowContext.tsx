@@ -1,5 +1,3 @@
-
-
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { Workflow } from '../types/workflow';
 
