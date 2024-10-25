@@ -1,24 +1,32 @@
-// src/App.tsx
-
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; 
+import { WorkflowContextProvider } from './contexts/WorkflowContext';      
+import { TaskContextProvider } from './contexts/TaskContext';              
+import { ImageGenerationContextProvider } from './contexts/ImageGenerationContext'; 
+
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
-import WorkflowDetail from './pages/WorkflowDetails';
-import Header from './components/Header'; 
+import WorkflowDetail from './pages/WorkflowDetail';
+import ImageGenerationPage from './pages/ImageGenerationPage';
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <Header /> 
-      <div className="container mx-auto px-4 py-6"> 
-        <Routes>
-          <Route path="/" element={<Home />} /> 
-          <Route path="/dashboard" element={<Dashboard />} /> 
-          <Route path="/workflow/:id" element={<WorkflowDetail />} /> 
-        </Routes>
-      </div>
-    </div>
+    <Router>
+      <WorkflowContextProvider>
+        <TaskContextProvider>
+          <ImageGenerationContextProvider>
+            <div className='app-container'>
+              <Routes>
+              <Route path="/" element={<Home />} />               
+                <Route path="/dashboard" element={<Dashboard />} />   
+                <Route path="/workflow/:id" element={<WorkflowDetail />} /> 
+                <Route path="/ai-image-generation" element={<ImageGenerationPage />} /> 
+              </Routes>
+            </div>
+          </ImageGenerationContextProvider>
+        </TaskContextProvider>
+      </WorkflowContextProvider>
+    </Router>
   );
 };
 
