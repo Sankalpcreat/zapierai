@@ -3,13 +3,14 @@ import { useWorkflowContext } from '../../contexts/WorkflowContext';
 import TaskNode from './TaskNode';
 import TaskConnection from './TaskConnection';
 import WorkflowSidebar from './WorkflowSidebar';
+import AIImageGenerationNode from '../AI/AIImageGenerationNode'; 
 
 
 interface TaskNodeType {
   id: number;
   name: string;
-  status: 'pending' | 'in-progress' | 'completed';
-  config?: Record<string>; // Configuration object for the task (optional)
+  type: 'ai-image-generation' | 'api' | 'email'; // Task types
+  config?: Record<string, any>;
 }
 
 interface TaskConnectionType {
@@ -43,8 +44,11 @@ const WorkflowBuilder: React.FC = () => {
       
         <div className="workflow-canvas">
           {taskNodes.map((task, index) => (
-            <TaskNode key={index} task={task} />
+            task.type === 'ai-image-generation' ? 
+              <AIImageGenerationNode key={index} task={task} /> : 
+              <TaskNode key={index} task={task} />
           ))}
+
 
           {connections.map((connection, index) => (
             <TaskConnection key={index} from={connection.from} to={connection.to} />
