@@ -48,3 +48,56 @@ export default tseslint.config({
   },
 })
 ```
+
+
+/src
+│
+├── /components                              # Reusable UI components
+│   ├── /workflow                             # Workflow-related components
+│   │   ├── WorkflowBuilder.tsx               # Main drag-and-drop workflow builder
+│   │   ├── TaskNode.tsx                      # Represents individual tasks in the workflow
+│   │   ├── ConnectionLine.tsx                # Visual representation of connections between tasks
+│   │   └── WorkflowSidebar.tsx               # Sidebar for adding tasks to the workflow
+│   ├── /modals                               # Modal components for task configurations and details
+│   │   ├── TaskConfigModal.tsx               # Modal to configure each task's input/output
+│   │   └── WorkflowSummaryModal.tsx          # Modal to summarize and execute workflows
+│   ├── /UI                                   # General UI components (buttons, inputs, etc.)
+│   │   ├── Button.tsx                        # Reusable button component
+│   │   ├── Dropdown.tsx                      # Reusable dropdown component
+│   │   └── ProgressBar.tsx                   # Real-time task execution progress bar
+│   └── Header.tsx                            # Header/navigation component
+│
+├── /pages                                   # Pages of the application
+│   ├── Home.tsx                             # Home page for listing workflows
+│   ├── Dashboard.tsx                        # Dashboard to manage workflows and tasks
+│   ├── WorkflowDetail.tsx                   # Detailed page for viewing workflow details and execution status
+│   ├── TaskDetail.tsx                       # Page for viewing specific task execution and status
+│
+├── /services                                # Handles API calls to the backend
+│   ├── api.ts                               # Centralized API service (Axios/Fetch)
+│   ├── workflowService.ts                   # API calls related to workflows (create, fetch, update)
+│   ├── taskService.ts                       # API calls related to tasks (create, fetch status, update)
+│
+├── /hooks                                   # Custom React hooks
+│   ├── useFetchWorkflows.ts                 # Hook to fetch workflows from the backend
+│   ├── useFetchTasks.ts                     # Hook to fetch tasks and task statuses
+│   ├── useWebSocket.ts                      # Hook for WebSocket real-time updates on task execution
+│
+├── /contexts                                # Context for global state management
+│   ├── WorkflowContext.tsx                  # Context for managing the global state of workflows
+│   ├── TaskContext.tsx                      # Context for managing global state of tasks and their status
+│
+├── /types                                   # TypeScript types and interfaces
+│   ├── workflow.ts                          # Types for workflows (WorkflowCreate, WorkflowResponse, etc.)
+│   ├── task.ts                              # Types for tasks (TaskCreate, TaskResponse, TaskStatus, etc.)
+│   └── user.ts                              # Types for user authentication, login, etc.
+│
+├── /styles                                  # Tailwind CSS or custom styling
+│   ├── globals.css                          # Global styles and Tailwind CSS configurations
+│   ├── theme.ts                             # Theme definitions for consistent design (optional)
+│
+├── App.tsx                                  # Main App component
+├── index.tsx                                # Entry point for React
+├── tailwind.config.js                       # Tailwind CSS configuration
+├── tsconfig.json                            # TypeScript configuration
+└── package.json                             # Project dependencies and scripts
