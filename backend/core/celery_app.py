@@ -1,14 +1,14 @@
 from celery import Celery
-import os
-from dotenv import load_dotenv
+from core.config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
 
-load_dotenv()
+# Initialize the Celery app
+celery_app = Celery(
+    "tasks",
+    broker=CELERY_BROKER_URL,
+    backend=CELERY_RESULT_BACKEND,
+)
 
-CELERY_BROKER_URL = os.getenv("REDIS_URL")
-CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")
-
-celery_app = Celery("tasks", broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND)
-
+# Celery configuration
 celery_app.conf.update(
     task_serializer='json',
     result_serializer='json',
