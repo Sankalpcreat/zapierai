@@ -1,45 +1,46 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useWorkflowContext } from '../contexts/WorkflowContext';
+import React, { useState } from 'react';
+import useFetchWorkflows from '../hooks/useFetchWorkflows';
+import { createWorkflow } from '../services/workflowService';
 
 const Dashboard: React.FC = () => {
-  const { workflows, addWorkflow } = useWorkflowContext();
+  const { workflows, loading, error } = useFetchWorkflows();
+  const [newWorkflowName, setNewWorkflowName] = useState('');
 
-
-  const handleCreateWorkflow = () => {
-    const newWorkflow = {
-      id: Date.now(), 
-      name: `New Workflow - ${new Date().toLocaleTimeString()}`,
-      description: 'A new workflow description',
-      tasks: [],
-      status: 'pending',
-    };
-    addWorkflow(newWorkflow);
+  const handleCreateWorkflow = async () => {
+    if (!newWorkflowName) return;
+    try {
+      await createWorkflow({ name: newWorkflowName });
+      setNewWorkflowName(''); // Reset input
+    } catch (err) {
+      console.error('Failed to create workflow');
+    }
   };
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+
   return (
-    <div className="dashboard-container">
-      <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
+    <div className="dashboard-page">
+      <h1 className="text-2xl mb-4">Dashboard</h1>
 
+      <div className="new-workflow-form">
+        <input
+          type="text"
+          value={newWorkflowName}
+          onChange={(e) => setNewWorkflowName(e.target.value)}
+          placeholder="Enter new workflow name"
+          className="input-field"
+        />
+        <button onClick={handleCreateWorkflow} className="btn btn-primary">
+          Create Workflow
+        </button>
+      </div>
 
-      <button onClick={handleCreateWorkflow} className="btn btn-success mb-4">
-        Create New Workflow
-      </button>
-
-     
-      {workflows.length > 0 ? (
-        <ul className="workflow-list">
-          {workflows.map((workflow) => (
-            <li key={workflow.id} className="workflow-item">
-              <Link to={`/workflow/${workflow.id}`} className="text-blue-600 underline">
-                {workflow.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No workflows available. Please create a new workflow.</p>
-      )}
+      <ul className="workflow-list">
+        {workflows.map((workflow) => (
+          <li key={workflow.id}>{workflow.name}</li>
+        ))}
+      </ul>
     </div>
   );
 };
