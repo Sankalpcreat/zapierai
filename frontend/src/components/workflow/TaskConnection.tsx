@@ -1,3 +1,4 @@
+// Visualizes the connections between tasks
 import React from 'react';
 
 const TaskConnection: React.FC<{ from: any; to: any }> = ({ from, to }) => {

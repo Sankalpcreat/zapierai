@@ -1,3 +1,4 @@
+// A modal for configuring task-specific settings
 import React,{useState} from "react";
 import Modal from 'react-modal';
 

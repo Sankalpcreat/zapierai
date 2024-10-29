@@ -1,3 +1,4 @@
+// Represents individual tasks within the workflow.
 import React from 'react';
 
 const TaskNode: React.FC<{ task: any }> = ({ task }) => {

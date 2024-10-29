@@ -1,3 +1,4 @@
+// Allows users to add tasks to the workflow
 import React from 'react';
 
 const WorkflowSidebar: React.FC<{ onAddTask: (task: any) => void }> = ({ onAddTask }) => {

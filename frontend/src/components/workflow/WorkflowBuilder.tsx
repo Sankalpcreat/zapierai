@@ -1,9 +1,10 @@
+// The main interface for building workflows with drag-and-drop functionality.
 import React, { useState } from 'react';
 import { useWorkflowContext } from '../../contexts/WorkflowContext';
 import TaskNode from './TaskNode';
 import TaskConnection from './TaskConnection';
 import WorkflowSidebar from './WorkflowSidebar';
-import AIImageGenerationNode from '../AI/AIImageGenerationNode'; 
+import AIImageGenerationNode from '../AI/AIImageGenerationNode.tsx'; 
 
 
 interface TaskNodeType {

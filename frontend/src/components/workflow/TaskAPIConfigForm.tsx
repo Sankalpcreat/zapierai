@@ -1,3 +1,4 @@
+// A form to configure API-based tasks.
 import React, { useState } from 'react';
 
 interface TaskAPIConfigFormProps {

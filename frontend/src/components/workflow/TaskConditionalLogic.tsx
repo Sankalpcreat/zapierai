@@ -1,3 +1,4 @@
+// Manages conditional logic between tasks (success and failure paths).
 import React, { useState } from 'react';
 
 interface TaskConditionalLogicProps {

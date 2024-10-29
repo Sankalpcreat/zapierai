@@ -1,3 +1,4 @@
+// Shows the real-time status of tasks
 import React from 'react'
 
 interface TaskStatusIndicatorProps{
