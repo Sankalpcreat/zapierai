@@ -1,3 +1,4 @@
+//just to preview the image that has been generated
 import React from 'react';
 import { ImageGenerationResult } from '../../types/imageGeneration';
 

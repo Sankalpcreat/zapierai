@@ -1,3 +1,4 @@
+//a basically a form for user for the prompts and dimension of ai image generation
 import React, { useState } from 'react';
 import { ImageGenerationRequest } from '../../types/imageGeneration';
 import ImageGenerator from './ImageGenerator'; 

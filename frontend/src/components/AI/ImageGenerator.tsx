@@ -1,3 +1,4 @@
+//basic openai response send and generate the image and thus show the result
 import axios from 'axios';
 import { ImageGenerationRequest, ImageGenerationResult } from '../../types/imageGeneration';
 
@@ -18,7 +19,7 @@ const ImageGenerator = async (params: ImageGenerationRequest): Promise<ImageGene
       createdAt: new Date().toISOString(),
     };
   } catch (error) {
-    throw new Error('Failed to generate image');
+    throw new Error('Failed to generate image',error);
   }
 };
 

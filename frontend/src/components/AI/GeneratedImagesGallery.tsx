@@ -1,3 +1,4 @@
+//displaying the gallery of generated images with help of image preview
 import React from 'react';
 import { ImageGenerationResult } from '../../types/imageGeneration';
 import ImagePreview from './ImagePreview';
