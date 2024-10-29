@@ -1,3 +1,4 @@
+// Manages tasks, including fetching tasks for a workflow, updating task status, and creating new tasks.
 import api from './api';
 
 export interface Task {

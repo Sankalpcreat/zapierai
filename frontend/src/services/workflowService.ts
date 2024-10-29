@@ -1,3 +1,4 @@
+// Handles CRUD operations for workflows (fetch, create, update workflows).
 import api from './api';
 
 export interface Workflow {

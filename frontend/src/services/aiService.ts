@@ -1,3 +1,4 @@
+// Handles AI image generation requests by sending prompts and dimensions to the backend and returning the result.
 import api from './api';
 
 export interface ImageGenerationRequest {

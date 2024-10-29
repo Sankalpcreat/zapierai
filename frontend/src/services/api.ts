@@ -1,3 +1,4 @@
+// Provides a centralized Axios instance for all API requests.
 import axios from 'axios';
 
 // Create an Axios instance with default settings
