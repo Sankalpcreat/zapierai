@@ -1,3 +1,5 @@
+// - Manages workflows (list and active workflow).
+// - Provides functions to add workflows and set active workflow.
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { Workflow } from '../types/workflow';
 

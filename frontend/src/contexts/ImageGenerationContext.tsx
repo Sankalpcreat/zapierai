@@ -1,3 +1,5 @@
+// - Manages AI image generation tasks.
+// - Provides functions to add new generation tasks and update task statuses (with result URLs).
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { ImageGenerationRequest, ImageGenerationResult } from '../types/imageGeneration';
 

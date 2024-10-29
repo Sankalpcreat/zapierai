@@ -1,3 +1,5 @@
+// - Manages tasks for workflows.
+// - Provides functions to add tasks and update their statuses.
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { Task } from '../types/task';
 
