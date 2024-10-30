@@ -8,14 +8,14 @@ class Task(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     status = Column(String, default="pending")
-    result = Column(JSON, nullable=True)
-    
-    # Foreign key to workflow
-    workflow_id = Column(Integer, ForeignKey('workflows.id'))
+    result = Column(JSON, nullable=True)  
+    workflow_id = Column(Integer, ForeignKey('workflows.id'))  
+    next_task_id = Column(Integer, ForeignKey('tasks.id'), nullable=True)  
+
+
     workflow = relationship("Workflow", back_populates="tasks")
 
-    # Task chaining (next and previous tasks)
-    next_task_id = Column(Integer, ForeignKey('tasks.id'), nullable=True)
+
     next_task = relationship("Task", remote_side=[id], backref="previous_task")
 
     def __repr__(self):
