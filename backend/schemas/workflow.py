@@ -1,15 +1,16 @@
 from pydantic import BaseModel
-from typing import Optional
+
 
 class WorkflowCreate(BaseModel):
-    name:str
-    description:Optional[str]=None
+    name: str
+    description: str = None
+
 
 class WorkflowResponse(BaseModel):
-    id:int
-    name:str
-    description:Optional[str]=None
-    is_active=bool
+    id: int
+    name: str
+    description: str
+    is_active: bool
 
     class Config:
-        orm_mode=True
+        orm_mode = True
