@@ -12,6 +12,7 @@ def list_workflows(db: Session = Depends(get_db)):
     workflows = get_all_workflows(db)
     return workflows
 
+
 # Get a single workflow by ID
 @router.get("/{workflow_id}", response_model=WorkflowResponse)
 def retrieve_workflow(workflow_id: int, db: Session = Depends(get_db)):
@@ -20,11 +21,13 @@ def retrieve_workflow(workflow_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Workflow not found")
     return workflow
 
+
 # Create a new workflow
 @router.post("/", response_model=WorkflowResponse)
 def create_workflow(workflow_data: WorkflowCreate, db: Session = Depends(get_db)):
     new_workflow = create_new_workflow(workflow_data, db)
     return new_workflow
+
 
 # Update a workflow
 @router.put("/{workflow_id}", response_model=WorkflowResponse)
@@ -33,6 +36,7 @@ def update_workflow_route(workflow_id: int, workflow_data: WorkflowCreate, db: S
     if not updated_workflow:
         raise HTTPException(status_code=404, detail="Workflow not found")
     return updated_workflow
+
 
 # Delete a workflow
 @router.delete("/{workflow_id}")
