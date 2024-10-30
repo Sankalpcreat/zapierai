@@ -1,20 +1,23 @@
-import openai
+import requests
+from core.config import OPENAI_API_KEY
 
-def generate_image(prompt: str, api_key: str):
-  
-    openai.api_key = api_key
 
-    try:
-        response = openai.Image.create(
-            prompt=prompt,
-            n=1,
-            size="1024x1024" 
-        )
-        
-        if response['data']:
-            return response['data'][0]['url']  
-        else:
-            raise Exception("No image URL returned.")
+def generate_image(prompt: str) -> str:
+    headers = {
+        "Authorization": f"Bearer {OPENAI_API_KEY}",
+        "Content-Type": "application/json",
+    }
+    data = {
+        "prompt": prompt,
+        "n": 1,  
+        "size": "1024x1024",  
+        "response_format": "url",  
+    }
+
+    response = requests.post("https://api.openai.com/v1/images/generations", json=data, headers=headers)
     
-    except Exception as e:
-        raise Exception(f"Error during image generation: {str(e)}")
+    if response.status_code == 200:
+        result = response.json()
+        return result['data'][0]['url']
+    else:
+        raise Exception("Image generation failed with error: " + response.text)

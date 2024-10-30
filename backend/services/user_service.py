@@ -1,32 +1,37 @@
 from sqlalchemy.orm import Session
-from models.user import User
-from schemas.user import UserCreate
-from passlib.context import CryptContext
+from models.task import Task
+from schemas.task import TaskCreate, TaskStatus
 
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-def get_password_hash(password: str):
-    return pwd_context.hash(password)
-
-def verify_password(plain_password: str, hashed_password: str):
-    return pwd_context.verify(plain_password, hashed_password)
-
-def create_user(db: Session, user_data: UserCreate):
-    hashed_password = get_password_hash(user_data.password)
-    user = User(
-        username=user_data.username,
-        email=user_data.email,
-        hashed_password=hashed_password,
-        is_active=True
+# Create a new task
+def create_new_task(task_data: TaskCreate, db: Session) -> Task:
+    new_task = Task(
+        name=task_data.name,
+        workflow_id=task_data.workflow_id,
+        next_task_id=task_data.next_task_id
     )
-    db.add(user)
+    db.add(new_task)
     db.commit()
-    db.refresh(user)
-    return user
+    db.refresh(new_task)
+    return new_task
 
-def authenticate_user(db: Session, username: str, password: str):
-    user = db.query(User).filter(User.username == username).first()
-    if not user or not verify_password(password, user.hashed_password):
-        return False
-    return user
+# Get tasks by workflow ID
+def get_tasks_by_workflow(workflow_id: int, db: Session) -> list[Task]:
+    return db.query(Task).filter(Task.workflow_id == workflow_id).all()
+
+# Update task status
+def update_task_status(task_id: int, status: TaskStatus, db: Session) -> Task:
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if task:
+        task.status = status.status
+        db.commit()
+        db.refresh(task)
+    return task
+
+# Update task result (e.g., image generation result)
+def update_task_result(task_id: int, result: dict, db: Session) -> Task:
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if task:
+        task.result = result
+        db.commit()
+        db.refresh(task)
+    return task
