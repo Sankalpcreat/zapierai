@@ -20,9 +20,7 @@ def create_new_task(task_data: TaskCreate, db: Session):
 
 
 def get_tasks_by_workflow(workflow_id: int, db: Session):
-    """
-    Fetch all tasks for a given workflow.
-    """
+   
     return db.query(Task).filter(Task.workflow_id == workflow_id).all()
 
 

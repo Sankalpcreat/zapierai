@@ -9,16 +9,19 @@ from core.websocket import ConnectionManager
 router = APIRouter()
 manager = ConnectionManager()
 
+#get all task for workflows
 @router.get("/workflow/{workflow_id}", response_model=list[TaskResponse])
 def list_tasks(workflow_id: int, db: Session = Depends(get_db)):
     tasks = get_tasks_by_workflow(workflow_id, db)
     return tasks
 
+
 # Create a new task
 @router.post("/", response_model=TaskResponse)
-def create_task(task: TaskCreate, db: Session = Depends(get_db)):
-    new_task = create_new_task(task, db)
+def create_task(task_data: TaskCreate, db: Session = Depends(get_db)):
+    new_task = create_new_task(task_data, db)
     return new_task
+
 
 # Update task status
 @router.put("/{task_id}/status", response_model=TaskResponse)
@@ -28,12 +31,14 @@ def update_task_status_route(task_id: int, status: TaskStatus, db: Session = Dep
         raise HTTPException(status_code=404, detail="Task not found")
     return updated_task
 
+
+
 @router.websocket("/ws/{task_id}")
 async def websocket_endpoint(websocket: WebSocket, task_id: int):
     await manager.connect(websocket)
     try:
         while True:
-            # Example of sending task updates over WebSocket
+            
             await websocket.send_text(f"Task {task_id} status update.")
     except WebSocketDisconnect:
         manager.disconnect(websocket)
