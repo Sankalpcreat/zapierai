@@ -1,19 +1,12 @@
-from fastapi import Depends, HTTPException
+from typing import Generator
+from fastapi import Depends
 from sqlalchemy.orm import Session
-from core.database import SessionLocal
-from services.user_service import get_user_by_token
+from core.database import get_db
 
-# Dependency to get the DB session
-def get_db():
-    db = SessionLocal()
+# Dependency for getting the database session
+def get_db_dependency() -> Generator[Session, None, None]:
+    db = get_db()
     try:
         yield db
     finally:
         db.close()
-
-# Dependency to get the current user based on the token (for authenticated routes)
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    user = get_user_by_token(token, db)
-    if not user:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    return user
