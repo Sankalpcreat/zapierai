@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, JSON
+from sqlalchemy import Column, Integer, String, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from core.database import Base
 
@@ -9,11 +9,13 @@ class Task(Base):
     name = Column(String, index=True)
     status = Column(String, default="pending")
     result = Column(JSON, nullable=True)
-    dependencies = Column(Integer, ForeignKey('tasks.id'), nullable=True)  
-    workflow_id = Column(Integer, ForeignKey('workflows.id'))
-    next_task_id = Column(Integer, ForeignKey('tasks.id'), nullable=True)
     
+    # Foreign key to workflow
+    workflow_id = Column(Integer, ForeignKey('workflows.id'))
     workflow = relationship("Workflow", back_populates="tasks")
+
+    # Task chaining (next and previous tasks)
+    next_task_id = Column(Integer, ForeignKey('tasks.id'), nullable=True)
     next_task = relationship("Task", remote_side=[id], backref="previous_task")
 
     def __repr__(self):

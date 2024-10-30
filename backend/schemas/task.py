@@ -5,6 +5,11 @@ class TaskCreate(BaseModel):
     name: str
     workflow_id: int
 
+class TaskStatus(BaseModel):
+    status: str
+
+    class Config:
+        orm_mode = True
 class TaskResponse(BaseModel):
     id: int
     name: str

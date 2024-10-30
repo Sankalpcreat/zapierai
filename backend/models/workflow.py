@@ -10,7 +10,7 @@ class Workflow(Base):
     description=Column(String)
     is_active=Column(Boolean,default=True)
 
-    task=relationship("Task",back_populates="workflow")
+    tasks=relationship("Task",back_populates="workflow")
 
     def __repr__(self):
         return f"<Workflow(id={self.id}, name={self.name})>"
