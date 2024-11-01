@@ -4,7 +4,7 @@ import { useWorkflowContext } from '../../contexts/WorkflowContext';
 import TaskNode from './TaskNode';
 import TaskConnection from './TaskConnection';
 import WorkflowSidebar from './WorkflowSidebar';
-import AIImageGenerationNode from '../AI/AIImageGenerationNode.tsx'; 
+import AIImageGenerationNode from '../AI/ImageGenerationForm.tsx'; 
 
 
 interface TaskNodeType {
