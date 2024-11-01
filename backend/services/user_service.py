@@ -1,37 +1,31 @@
 from sqlalchemy.orm import Session
-from models.task import Task
-from schemas.task import TaskCreate, TaskStatus
+from models.user import User
+from schemas.user import UserCreate, UserLogin
+from core.security import verify_password, hash_password  # Ensure these exist for password management
+from fastapi import HTTPException, status
 
-# Create a new task
-def create_new_task(task_data: TaskCreate, db: Session) -> Task:
-    new_task = Task(
-        name=task_data.name,
-        workflow_id=task_data.workflow_id,
-        next_task_id=task_data.next_task_id
+
+# Create a new user
+def create_new_user(user_data: UserCreate, db: Session) -> User:
+    # Hash the password before saving it
+    hashed_password = hash_password(user_data.password)
+    new_user = User(
+        username=user_data.username,
+        email=user_data.email,
+        hashed_password=hashed_password
     )
-    db.add(new_task)
+    db.add(new_user)
     db.commit()
-    db.refresh(new_task)
-    return new_task
+    db.refresh(new_user)
+    return new_user
 
-# Get tasks by workflow ID
-def get_tasks_by_workflow(workflow_id: int, db: Session) -> list[Task]:
-    return db.query(Task).filter(Task.workflow_id == workflow_id).all()
 
-# Update task status
-def update_task_status(task_id: int, status: TaskStatus, db: Session) -> Task:
-    task = db.query(Task).filter(Task.id == task_id).first()
-    if task:
-        task.status = status.status
-        db.commit()
-        db.refresh(task)
-    return task
-
-# Update task result (e.g., image generation result)
-def update_task_result(task_id: int, result: dict, db: Session) -> Task:
-    task = db.query(Task).filter(Task.id == task_id).first()
-    if task:
-        task.result = result
-        db.commit()
-        db.refresh(task)
-    return task
+# Authenticate a user
+def authenticate_user(user_data: UserLogin, db: Session) -> User:
+    user = db.query(User).filter(User.email == user_data.email).first()
+    if not user or not verify_password(user_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
+    return user

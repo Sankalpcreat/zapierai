@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from core.database import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
-from api import router  # Import the unified router
+from api import router 
+from fastapi import WebSocket
 
 
 app = FastAPI()
