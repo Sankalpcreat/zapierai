@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ImageGenerationResult } from '../../types/imageGeneration';
 import ImagePreview from './ImagePreview';
