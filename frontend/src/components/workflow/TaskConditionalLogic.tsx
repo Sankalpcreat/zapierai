@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 interface TaskConditionalLogicProps {
   onConditionSet: (successTaskId: number, failureTaskId: number) => void;
-  tasks: any[]; 
+  tasks: { id: number; name: string }[];
 }
 
 const TaskConditionalLogic: React.FC<TaskConditionalLogicProps> = ({ onConditionSet, tasks }) => {

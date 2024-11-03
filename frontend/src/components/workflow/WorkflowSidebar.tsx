@@ -1,7 +1,12 @@
 // Allows users to add tasks to the workflow
 import React from 'react';
+import { TaskNodeType } from './TaskNode';
 
-const WorkflowSidebar: React.FC<{ onAddTask: (task: any) => void }> = ({ onAddTask }) => {
+interface WorkflowSidebarProps {
+  onAddTask: (task: TaskNodeType) => void;
+}
+
+const WorkflowSidebar: React.FC<WorkflowSidebarProps> = ({ onAddTask }) => {
   const handleAddTask = () => {
     const newTask = {
       id: Date.now(),  
