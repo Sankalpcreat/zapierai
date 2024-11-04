@@ -1,56 +1,58 @@
 import React, { useState } from 'react';
 import { ImageGenerationRequest } from '../../types/imageGeneration';
+import ImageGenerator from './ImageGenerator';
 
 interface ImageGenerationFormProps {
-  onSubmit: (data: ImageGenerationRequest) => void;
+  onImageGenerated: (imageUrl: string) => void;
 }
 
-const ImageGenerationForm: React.FC<ImageGenerationFormProps> = ({ onSubmit }) => {
-  const [prompt, setPrompt] = useState('');
-  const [width, setWidth] = useState(1024);
-  const [height, setHeight] = useState(1024);
+const ImageGenerationForm: React.FC<ImageGenerationFormProps> = ({ onImageGenerated }) => {
+  const [prompt, setPrompt] = useState<string>('');
+  const [width, setWidth] = useState<number>(512);
+  const [height, setHeight] = useState<number>(512);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    onSubmit({ prompt, width, height });
+  const handleGenerateImage = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const request: ImageGenerationRequest = { prompt, width, height };
+      const result = await ImageGenerator(request);
+      onImageGenerated(result.resultUrl);
+    } catch (err) {
+      setError('Failed to generate image',err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 bg-gray-100 border rounded shadow-md">
-      <h2 className="text-lg font-semibold">Generate AI Image</h2>
-      <div className="mb-4">
-        <label htmlFor="prompt">Prompt</label>
-        <input
-          type="text"
-          id="prompt"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          className="w-full p-2 border rounded"
-          placeholder="Enter an AI prompt here"
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="width">Width</label>
-        <input
-          type="number"
-          id="width"
-          value={width}
-          onChange={(e) => setWidth(Number(e.target.value))}
-          className="w-full p-2 border rounded"
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="height">Height</label>
-        <input
-          type="number"
-          id="height"
-          value={height}
-          onChange={(e) => setHeight(Number(e.target.value))}
-          className="w-full p-2 border rounded"
-        />
-      </div>
-      <button type="submit" className="btn btn-primary">Generate Image</button>
-    </form>
+    <div className="image-generation-form">
+      <h2>Generate AI Image</h2>
+      <input
+        type="text"
+        placeholder="Enter prompt"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+      />
+      <input
+        type="number"
+        placeholder="Width"
+        value={width}
+        onChange={(e) => setWidth(parseInt(e.target.value))}
+      />
+      <input
+        type="number"
+        placeholder="Height"
+        value={height}
+        onChange={(e) => setHeight(parseInt(e.target.value))}
+      />
+      <button onClick={handleGenerateImage} disabled={loading}>
+        {loading ? 'Generating...' : 'Generate Image'}
+      </button>
+      {error && <p className="error">{error}</p>}
+    </div>
   );
 };
 

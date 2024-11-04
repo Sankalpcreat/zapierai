@@ -6,15 +6,17 @@ interface GeneratedImagesGalleryProps {
   images: ImageGenerationResult[];
 }
 
-const GeneratedImagesGallery: React.FC<GeneratedImagesGalleryProps> = ({ images }) => (
-  <div>
-    <h2 className="text-2xl font-bold mb-4">Generated Images</h2>
-    <div className="grid grid-cols-3 gap-4">
-      {images.map((image) => (
-        <ImagePreview key={image.requestId} image={image} />
-      ))}
+const GeneratedImagesGallery: React.FC<GeneratedImagesGalleryProps> = ({ images }) => {
+  return (
+    <div className="generated-images-gallery">
+      <h2>Generated Images</h2>
+      <div className="grid grid-cols-3 gap-4">
+        {images.map((image) => (
+          <ImagePreview key={image.requestId} image={image} />
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default GeneratedImagesGallery;

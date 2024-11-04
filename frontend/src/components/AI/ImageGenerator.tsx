@@ -1,5 +1,3 @@
-// src/components/AI/ImageGenerator.tsx
-
 import axios from 'axios';
 import { ImageGenerationRequest, ImageGenerationResult } from '../../types/imageGeneration';
 
@@ -10,13 +8,15 @@ const ImageGenerator = async (params: ImageGenerationRequest): Promise<ImageGene
       width: params.width,
       height: params.height,
     });
+
+    const { resultUrl } = response.data;
     return {
-      requestId: response.data.task_id,
-      resultUrl: response.data.image_url,
+      requestId: params.id,
+      resultUrl,
       createdAt: new Date().toISOString(),
     };
   } catch (error) {
-    console.error('Error generating image:', error);
+    console.error('Failed to generate image:', error);
     throw new Error('Image generation failed');
   }
 };
