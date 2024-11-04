@@ -1,28 +1,26 @@
-// Handles CRUD operations for workflows (fetch, create, update workflows).
 import api from './api';
+import { WorkflowCreate, WorkflowResponse } from '../types/workflow';
 
-export interface Workflow {
-  id: number;
-  name: string;
-  description: string;
-}
-
-export const fetchWorkflows = async (): Promise<Workflow[]> => {
-  const response = await api.get('/workflows');
+export const createWorkflow = async (workflowData: WorkflowCreate): Promise<WorkflowResponse> => {
+  const response = await api.post<WorkflowResponse>('/workflows', workflowData);
   return response.data;
 };
 
-export const fetchWorkflowById = async (workflowId: number): Promise<Workflow> => {
-  const response = await api.get(`/workflows/${workflowId}`);
+export const getWorkflows = async (): Promise<WorkflowResponse[]> => {
+  const response = await api.get<WorkflowResponse[]>('/workflows');
   return response.data;
 };
 
-export const createWorkflow = async (workflowData: Partial<Workflow>): Promise<Workflow> => {
-  const response = await api.post('/workflows', workflowData);
+export const getWorkflowById = async (workflowId: number): Promise<WorkflowResponse> => {
+  const response = await api.get<WorkflowResponse>(`/workflows/${workflowId}`);
   return response.data;
 };
 
-export const updateWorkflow = async (workflowId: number, workflowData: Partial<Workflow>): Promise<Workflow> => {
-  const response = await api.put(`/workflows/${workflowId}`, workflowData);
+export const updateWorkflow = async (workflowId: number, workflowData: WorkflowCreate): Promise<WorkflowResponse> => {
+  const response = await api.put<WorkflowResponse>(`/workflows/${workflowId}`, workflowData);
   return response.data;
+};
+
+export const deleteWorkflow = async (workflowId: number): Promise<void> => {
+  await api.delete(`/workflows/${workflowId}`);
 };

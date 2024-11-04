@@ -1,42 +1,34 @@
-// - Manages workflows (list and active workflow).
-// - Provides functions to add workflows and set active workflow.
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Workflow } from '../types/workflow';
 
-
-interface WorkflowContextType {
-  workflows: Workflow[];
+interface WorkflowContextProps {
   activeWorkflow: Workflow | null;
-  addWorkflow: (workflow: Workflow) => void;
   setActiveWorkflow: (workflow: Workflow) => void;
+  workflows: Workflow[];
+  addWorkflow: (workflow: Workflow) => void;
 }
 
+const WorkflowContext = createContext<WorkflowContextProps | undefined>(undefined);
 
-const WorkflowContext = createContext<WorkflowContextType | undefined>(undefined);
-
-export const WorkflowContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
-  const [activeWorkflow, setActiveWorkflowState] = useState<Workflow | null>(null);
+  const [activeWorkflow, setActiveWorkflow] = useState<Workflow | null>(null);
 
   const addWorkflow = (workflow: Workflow) => {
-    setWorkflows([...workflows, workflow]);
-  };
-
-  const setActiveWorkflow = (workflow: Workflow) => {
-    setActiveWorkflowState(workflow);
+    setWorkflows((prev) => [...prev, workflow]);
   };
 
   return (
-    <WorkflowContext.Provider value={{ workflows, activeWorkflow, addWorkflow, setActiveWorkflow }}>
+    <WorkflowContext.Provider value={{ activeWorkflow, setActiveWorkflow, workflows, addWorkflow }}>
       {children}
     </WorkflowContext.Provider>
   );
 };
 
-export const useWorkflowContext = () => {
+export const useWorkflowContext = (): WorkflowContextProps => {
   const context = useContext(WorkflowContext);
   if (!context) {
-    throw new Error('useWorkflowContext must be used within a WorkflowContextProvider');
+    throw new Error('useWorkflowContext must be used within a WorkflowProvider');
   }
   return context;
 };

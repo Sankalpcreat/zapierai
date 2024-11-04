@@ -1,24 +1,20 @@
-// Manages tasks, including fetching tasks for a workflow, updating task status, and creating new tasks.
 import api from './api';
+import { TaskCreate, TaskResponse, TaskStatus } from '../types/task';
 
-export interface Task {
-  id: number;
-  name: string;
-  status: 'pending' | 'in-progress' | 'completed' | 'failed';
-  workflowId: number;
-}
-
-export const fetchTasksByWorkflow = async (workflowId: number): Promise<Task[]> => {
-  const response = await api.get(`/workflows/${workflowId}/tasks`);
+// Function to create a new task
+export const createTask = async (taskData: TaskCreate): Promise<TaskResponse> => {
+  const response = await api.post<TaskResponse>('/tasks', taskData);
   return response.data;
 };
 
-export const updateTaskStatus = async (taskId: number, status: 'pending' | 'in-progress' | 'completed' | 'failed'): Promise<Task> => {
-  const response = await api.put(`/tasks/${taskId}/status`, { status });
+// Function to fetch tasks by workflow ID
+export const fetchTasksByWorkflow = async (workflowId: number): Promise<TaskResponse[]> => {
+  const response = await api.get<TaskResponse[]>(`/tasks/workflow/${workflowId}`);
   return response.data;
 };
 
-export const createTask = async (taskData: Partial<Task>): Promise<Task> => {
-  const response = await api.post('/tasks', taskData);
+// Function to update the status of a task
+export const updateTaskStatus = async (taskId: number, status: { status: TaskStatus }): Promise<TaskResponse> => {
+  const response = await api.put<TaskResponse>(`/tasks/${taskId}/status`, status);
   return response.data;
 };

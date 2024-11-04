@@ -1,44 +1,36 @@
-import React, { useState } from 'react';
-import useFetchWorkflows from '../hooks/useFetchWorkflows';
-import { createWorkflow } from '../services/workflowService';
+import React, { useEffect, useState } from 'react';
+import { useWorkflowContext } from '../contexts/WorkflowContext';
+import { fetchTasksByWorkflow } from '../services/taskService';
+import { Task } from '../types/task';
+import { useParams, Link } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
-  const { workflows, loading, error } = useFetchWorkflows();
-  const [newWorkflowName, setNewWorkflowName] = useState('');
+  const { workflowId } = useParams<{ workflowId: string }>();
+  const { activeWorkflow, setActiveWorkflow } = useWorkflowContext();
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-  const handleCreateWorkflow = async () => {
-    if (!newWorkflowName) return;
-    try {
-      await createWorkflow({ name: newWorkflowName });
-      setNewWorkflowName(''); // Reset input
-    } catch (err) {
-      console.error('Failed to create workflow');
-    }
-  };
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  useEffect(() => {
+    const loadWorkflowData = async () => {
+      if (workflowId) {
+        const workflow = await fetchWorkflowById(parseInt(workflowId));
+        setActiveWorkflow(workflow);
+        const taskData = await fetchTasksByWorkflow(parseInt(workflowId));
+        setTasks(taskData);
+      }
+    };
+    loadWorkflowData();
+  }, [workflowId]);
 
   return (
     <div className="dashboard-page">
-      <h1 className="text-2xl mb-4">Dashboard</h1>
+      <h1 className="text-2xl mb-4">Dashboard: {activeWorkflow?.name}</h1>
 
-      <div className="new-workflow-form">
-        <input
-          type="text"
-          value={newWorkflowName}
-          onChange={(e) => setNewWorkflowName(e.target.value)}
-          placeholder="Enter new workflow name"
-          className="input-field"
-        />
-        <button onClick={handleCreateWorkflow} className="btn btn-primary">
-          Create Workflow
-        </button>
-      </div>
-
-      <ul className="workflow-list">
-        {workflows.map((workflow) => (
-          <li key={workflow.id}>{workflow.name}</li>
+      <Link to={`/workflows/${workflowId}/tasks/create`} className="btn btn-primary mb-4">Add Task</Link>
+      <ul>
+        {tasks.map((task) => (
+          <li key={task.id}>
+            <Link to={`/tasks/${task.id}`}>{task.name}</Link>
+          </li>
         ))}
       </ul>
     </div>

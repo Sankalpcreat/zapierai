@@ -1,15 +1,12 @@
-
 export interface ImageGenerationRequest {
-  prompt: string;        
-  width: number;          
-  height: number;    
-  style?: string;         
-  id?: number;            
+  prompt: string;
+  style?: string;
+  width: number;
+  height: number;
 }
 
-// Result type for the generated image
 export interface ImageGenerationResult {
-  requestId: number;      
-  resultUrl: string;     
-  createdAt: string;      
+  requestId: number;
+  resultUrl: string;
+  createdAt: string;
 }

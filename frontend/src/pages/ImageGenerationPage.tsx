@@ -1,57 +1,31 @@
 import React, { useState } from 'react';
-import useImageGeneration from '../hooks/useImageGeneration';
+import { ImageGenerationRequest } from '../types/imageGeneration';
+import { generateImage } from '../services/aiService';
+import GeneratedImagesGallery from '../components/AI/GeneratedImagesGallery';
 
 const ImageGenerationPage: React.FC = () => {
-  const { generateImage, imageUrl, loading, error } = useImageGeneration();
-  const [prompt, setPrompt] = useState<string>('');
-  const [width, setWidth] = useState<number>(512);
-  const [height, setHeight] = useState<number>(512);
+  const [prompt, setPrompt] = useState('');
+  const [width, setWidth] = useState(512);
+  const [height, setHeight] = useState(512);
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
 
-  const handleGenerateImage = () => {
-    generateImage({ prompt, width, height });
+  const handleGenerateImage = async () => {
+    const request: ImageGenerationRequest = { prompt, width, height };
+    const result = await generateImage(request);
+    setGeneratedImages((prevImages) => [...prevImages, result.resultUrl]);
   };
 
   return (
     <div className="image-generation-page">
       <h1 className="text-2xl mb-4">AI Image Generation</h1>
+      
+      <input type="text" value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="Enter prompt" />
+      <input type="number" value={width} onChange={(e) => setWidth(Number(e.target.value))} placeholder="Width" />
+      <input type="number" value={height} onChange={(e) => setHeight(Number(e.target.value))} placeholder="Height" />
 
-      <div className="input-form">
-        <input
-          type="text"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Enter prompt"
-          className="input-field mb-4"
-        />
-
-        <input
-          type="number"
-          value={width}
-          onChange={(e) => setWidth(Number(e.target.value))}
-          className="input-field mb-4"
-          placeholder="Width"
-        />
-
-        <input
-          type="number"
-          value={height}
-          onChange={(e) => setHeight(Number(e.target.value))}
-          className="input-field mb-4"
-          placeholder="Height"
-        />
-
-        <button onClick={handleGenerateImage} className="btn btn-primary mb-4">
-          Generate Image
-        </button>
-      </div>
-
-      {loading && <p>Generating image...</p>}
-      {error && <p>{error}</p>}
-      {imageUrl && (
-        <div className="generated-image">
-          <img src={imageUrl} alt="Generated AI" className="w-full h-auto" />
-        </div>
-      )}
+      <button onClick={handleGenerateImage} className="btn btn-primary mt-2">Generate Image</button>
+      
+      <GeneratedImagesGallery images={generatedImages} />
     </div>
   );
 };

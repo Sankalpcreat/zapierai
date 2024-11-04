@@ -1,39 +1,26 @@
 import { useState } from 'react';
+import { ImageGenerationRequest, ImageGenerationResult } from '../types/imageGeneration';
+import { useImageGenerationContext } from '../contexts/ImageGenerationContext';
 import axios from 'axios';
 
-export interface ImageGenerationRequest {
-  prompt: string;
-  width: number;
-  height: number;
-  style?: string;
-}
-
-export interface ImageGenerationResponse {
-  resultUrl: string;
-  createdAt: string;
-}
-
 const useImageGeneration = () => {
+  const { addGeneratedImage } = useImageGenerationContext();
   const [loading, setLoading] = useState<boolean>(false);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const generateImage = async (params: ImageGenerationRequest) => {
+  const generateImage = async (request: ImageGenerationRequest) => {
     setLoading(true);
-    setError(null);
-    setImageUrl(null);
     try {
-      const response = await axios.post('/api/openai/generate-image', params);
-      const { resultUrl } = response.data;
-      setImageUrl(resultUrl);
+      const response = await axios.post<ImageGenerationResult>('/api/generate-image', request);
+      addGeneratedImage(response.data);
     } catch (err) {
-      setError('Failed to generate image.');
+      setError('Image generation failed',err);
     } finally {
       setLoading(false);
     }
   };
 
-  return { generateImage, imageUrl, loading, error };
+  return { generateImage, loading, error };
 };
 
 export default useImageGeneration;

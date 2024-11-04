@@ -1,36 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Task } from '../types/task';
+import { useTaskContext } from '../contexts/TaskContext';
 import axios from 'axios';
 
-export interface Task {
-  id: number;
-  name: string;
-  status: 'pending' | 'in-progress' | 'completed' | 'failed';
-}
-
 const useFetchTasks = (workflowId: number) => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const { addTask } = useTaskContext();
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!workflowId) return;
-
     const fetchTasks = async () => {
-      setLoading(true);
       try {
-        const response = await axios.get(`/api/workflows/${workflowId}/tasks`);
-        setTasks(response.data);
+        const response = await axios.get<Task[]>(`/api/tasks/workflow/${workflowId}`);
+        response.data.forEach((task) => addTask(task));
       } catch (err) {
-        setError('Failed to fetch tasks.');
+        setError('Failed to fetch tasks',err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchTasks();
-  }, [workflowId]);
+  }, [workflowId, addTask]);
 
-  return { tasks, loading, error };
+  return { loading, error };
 };
 
 export default useFetchTasks;

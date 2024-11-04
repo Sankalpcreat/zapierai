@@ -1,37 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useTaskContext } from '../contexts/TaskContext';
 
-const useWebSocket = (url: string) => {
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [message, setMessage] = useState<any | null>(null);
-  const [error, setError] = useState<string | null>(null);
+const useWebSocket = () => {
+  const { updateTaskStatus } = useTaskContext();
 
   useEffect(() => {
-    const ws = new WebSocket(url);
-
-    ws.onopen = () => {
-      console.log('Connected to WebSocket');
-      setSocket(ws);
-    };
+    const ws = new WebSocket('ws://localhost:8000/ws/tasks');
 
     ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setMessage(data);
-    };
-
-    ws.onerror = (err) => {
-      setError('WebSocket connection error');
+      const { taskId, status } = JSON.parse(event.data);
+      updateTaskStatus(taskId, status);
     };
 
     ws.onclose = () => {
       console.log('WebSocket connection closed');
     };
 
-    return () => {
-      ws.close();
-    };
-  }, [url]);
-
-  return { socket, message, error };
+    return () => ws.close();
+  }, [updateTaskStatus]);
 };
 
 export default useWebSocket;
