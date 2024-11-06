@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from models.workflow import Workflow
 from schemas.workflow import WorkflowCreate
 
-# Create a new workflow
+
 def create_new_workflow(workflow_data: WorkflowCreate, db: Session) -> Workflow:
     new_workflow = Workflow(
         name=workflow_data.name,
@@ -13,15 +13,14 @@ def create_new_workflow(workflow_data: WorkflowCreate, db: Session) -> Workflow:
     db.refresh(new_workflow)
     return new_workflow
 
-# Get all workflows
 def get_all_workflows(db: Session) -> list[Workflow]:
     return db.query(Workflow).all()
 
-# Get a workflow by ID
+
 def get_workflow_by_id(workflow_id: int, db: Session) -> Workflow:
     return db.query(Workflow).filter(Workflow.id == workflow_id).first()
 
-# Update a workflow
+
 def update_workflow(workflow_id: int, workflow_data: WorkflowCreate, db: Session) -> Workflow:
     workflow = get_workflow_by_id(workflow_id, db)
     if workflow:
@@ -31,7 +30,6 @@ def update_workflow(workflow_id: int, workflow_data: WorkflowCreate, db: Session
         db.refresh(workflow)
     return workflow
 
-# Delete a workflow
 def delete_workflow(workflow_id: int, db: Session) -> bool:
     workflow = get_workflow_by_id(workflow_id, db)
     if workflow:
