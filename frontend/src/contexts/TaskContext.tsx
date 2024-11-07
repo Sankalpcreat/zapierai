@@ -1,35 +1,34 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Task } from '../types/task';
+import { getTasksByWorkflowId } from '../services/taskService';
 
-interface TaskContextProps {
+interface TaskContextType {
   tasks: Task[];
-  addTask: (task: Task) => void;
-  updateTaskStatus: (taskId: number, status: string) => void;
+  fetchTasks: (workflowId: number) => Promise<void>;
 }
 
-const TaskContext = createContext<TaskContextProps | undefined>(undefined);
+const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
 export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  const addTask = (task: Task) => {
-    setTasks((prev) => [...prev, task]);
-  };
-
-  const updateTaskStatus = (taskId: number, status: string) => {
-    setTasks((prev) =>
-      prev.map((task) => (task.id === taskId ? { ...task, status } : task))
-    );
+  const fetchTasks = async (workflowId: number) => {
+    try {
+      const data = await getTasksByWorkflowId(workflowId);
+      setTasks(data);
+    } catch (error) {
+      console.error('Failed to fetch tasks:', error);
+    }
   };
 
   return (
-    <TaskContext.Provider value={{ tasks, addTask, updateTaskStatus }}>
+    <TaskContext.Provider value={{ tasks, fetchTasks }}>
       {children}
     </TaskContext.Provider>
   );
 };
 
-export const useTaskContext = (): TaskContextProps => {
+export const useTaskContext = () => {
   const context = useContext(TaskContext);
   if (!context) {
     throw new Error('useTaskContext must be used within a TaskProvider');

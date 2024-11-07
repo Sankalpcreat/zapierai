@@ -1,28 +1,31 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { ImageGenerationResult } from '../types/imageGeneration';
+import { ImageGenerationRequest, ImageGenerationResult } from '../types/imageGeneration';
+import { generateImage } from '../services/aiService';
 
-interface ImageGenerationContextProps {
-  generatedImages: ImageGenerationResult[];
-  addGeneratedImage: (image: ImageGenerationResult) => void;
+interface ImageGenerationContextType {
+  generateImageRequest: (params: ImageGenerationRequest) => Promise<ImageGenerationResult>;
+  lastGeneratedImage?: ImageGenerationResult;
 }
 
-const ImageGenerationContext = createContext<ImageGenerationContextProps | undefined>(undefined);
+const ImageGenerationContext = createContext<ImageGenerationContextType | undefined>(undefined);
 
 export const ImageGenerationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [generatedImages, setGeneratedImages] = useState<ImageGenerationResult[]>([]);
+  const [lastGeneratedImage, setLastGeneratedImage] = useState<ImageGenerationResult | undefined>();
 
-  const addGeneratedImage = (image: ImageGenerationResult) => {
-    setGeneratedImages((prev) => [...prev, image]);
+  const generateImageRequest = async (params: ImageGenerationRequest): Promise<ImageGenerationResult> => {
+    const result = await generateImage(params);
+    setLastGeneratedImage(result);
+    return result;
   };
 
   return (
-    <ImageGenerationContext.Provider value={{ generatedImages, addGeneratedImage }}>
+    <ImageGenerationContext.Provider value={{ generateImageRequest, lastGeneratedImage }}>
       {children}
     </ImageGenerationContext.Provider>
   );
 };
 
-export const useImageGenerationContext = (): ImageGenerationContextProps => {
+export const useImageGenerationContext = () => {
   const context = useContext(ImageGenerationContext);
   if (!context) {
     throw new Error('useImageGenerationContext must be used within an ImageGenerationProvider');
