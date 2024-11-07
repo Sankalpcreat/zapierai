@@ -1,23 +1,23 @@
 import api from './api';
-import { WorkflowCreate, WorkflowResponse } from '../types/workflow';
+import { WorkflowCreate, Workflow } from '../types/workflow';
 
-export const createWorkflow = async (workflowData: WorkflowCreate): Promise<WorkflowResponse> => {
-  const response = await api.post<WorkflowResponse>('/workflows', workflowData);
+export const createWorkflow = async (workflowData: WorkflowCreate): Promise<Workflow> => {
+  const response = await api.post<Workflow>('/workflows', workflowData);
   return response.data;
 };
 
-export const getWorkflows = async (): Promise<WorkflowResponse[]> => {
-  const response = await api.get<WorkflowResponse[]>('/workflows');
+export const getAllWorkflows = async (): Promise<Workflow[]> => {
+  const response = await api.get<Workflow[]>('/workflows');
   return response.data;
 };
 
-export const getWorkflowById = async (workflowId: number): Promise<WorkflowResponse> => {
-  const response = await api.get<WorkflowResponse>(`/workflows/${workflowId}`);
+export const getWorkflowById = async (workflowId: number): Promise<Workflow> => {
+  const response = await api.get<Workflow>(`/workflows/${workflowId}`);
   return response.data;
 };
 
-export const updateWorkflow = async (workflowId: number, workflowData: WorkflowCreate): Promise<WorkflowResponse> => {
-  const response = await api.put<WorkflowResponse>(`/workflows/${workflowId}`, workflowData);
+export const updateWorkflow = async (workflowId: number, workflowData: WorkflowCreate): Promise<Workflow> => {
+  const response = await api.put<Workflow>(`/workflows/${workflowId}`, workflowData);
   return response.data;
 };
 
