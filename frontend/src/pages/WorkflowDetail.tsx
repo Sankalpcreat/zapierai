@@ -15,14 +15,13 @@ const WorkflowDetail: React.FC = () => {
       }
     };
     loadWorkflow();
-  }, [workflowId]);
+  }, [workflowId, setActiveWorkflow]);
 
   return (
     <div className="workflow-detail">
       <h1 className="text-2xl mb-4">Workflow: {activeWorkflow?.name}</h1>
       <p>Created at: {activeWorkflow?.createdAt}</p>
       <p>Updated at: {activeWorkflow?.updatedAt}</p>
-
       <h2 className="text-xl mt-4">Tasks in this Workflow</h2>
       <ul>
         {activeWorkflow?.tasks?.map((task) => (

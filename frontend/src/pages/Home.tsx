@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useWorkflowContext } from '../contexts/WorkflowContext';
-import { getWorkflows, createWorkflow } from '../services/workflowService';
-
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useWorkflowContext } from '../contexts/WorkflowContext';
+import { createWorkflow, getAllWorkflows } from '../services/workflowService';
 
 const Home: React.FC = () => {
   const { workflows, setWorkflows } = useWorkflowContext();
@@ -10,16 +9,18 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     const loadWorkflows = async () => {
-      const data = await getWorkflows();
+      const data = await getAllWorkflows();
       setWorkflows(data);
     };
     loadWorkflows();
-  }, []);
+  }, [setWorkflows]);
 
   const handleCreateWorkflow = async () => {
-    const workflow = await createWorkflow(newWorkflowName);
-    setWorkflows([...workflows, workflow]);
-    setNewWorkflowName('');
+    if (newWorkflowName) {
+      const newWorkflow = await createWorkflow({ name: newWorkflowName });
+      setWorkflows([...workflows, newWorkflow]);
+      setNewWorkflowName('');
+    }
   };
 
   return (
@@ -32,7 +33,6 @@ const Home: React.FC = () => {
         placeholder="New workflow name"
       />
       <button onClick={handleCreateWorkflow} className="btn btn-primary">Create Workflow</button>
-      
       <ul>
         {workflows.map((workflow) => (
           <li key={workflow.id}>
