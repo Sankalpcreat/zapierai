@@ -1,26 +1,24 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import WorkflowBuilderPage from './pages/WorkflowBuilderPage';
+import TaskDetailsPage from './pages/TaskDetailsPage';
 import { WorkflowProvider } from './contexts/WorkflowContext';
 import { TaskProvider } from './contexts/TaskContext';
 import { ImageGenerationProvider } from './contexts/ImageGenerationContext';
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import WorkflowDetail from './pages/WorkflowDetail';
-import TaskDetail from './pages/TaskDetail';
-import ImageGenerationPage from './pages/ImageGenerationPage';
 
 const App: React.FC = () => {
   return (
     <WorkflowProvider>
       <TaskProvider>
         <ImageGenerationProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/dashboard/:workflowId" element={<Dashboard />} />
-            <Route path="/workflows/:workflowId" element={<WorkflowDetail />} />
-            <Route path="/tasks/:taskId" element={<TaskDetail />} />
-            <Route path="/image-generation" element={<ImageGenerationPage />} />
-          </Routes>
+          <div className="app-container font-sans bg-gray-100 min-h-screen">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/workflow-builder" element={<WorkflowBuilderPage />} />
+              <Route path="/task/:taskId" element={<TaskDetailsPage />} />
+            </Routes>
+          </div>
         </ImageGenerationProvider>
       </TaskProvider>
     </WorkflowProvider>

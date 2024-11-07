@@ -1,16 +1,18 @@
+// src/contexts/TaskContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { TaskResponse } from '../types/task';  
-import { getTasksByWorkflowId } from '../services/taskService';
+import { Task } from '../types/task';
+import { getTasksByWorkflowId, updateTask } from '../services/taskService';
 
 interface TaskContextType {
-  tasks: TaskResponse[];
+  tasks: Task[];
   fetchTasks: (workflowId: number) => Promise<void>;
+  updateTaskStatus: (taskId: number, status: string) => Promise<void>;
 }
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
 export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [tasks, setTasks] = useState<TaskResponse[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   const fetchTasks = async (workflowId: number) => {
     try {
@@ -21,8 +23,19 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const updateTaskStatus = async (taskId: number, status: string) => {
+    try {
+      const updatedTask = await updateTask(taskId, status);
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+      );
+    } catch (error) {
+      console.error('Failed to update task status:', error);
+    }
+  };
+
   return (
-    <TaskContext.Provider value={{ tasks, fetchTasks }}>
+    <TaskContext.Provider value={{ tasks, fetchTasks, updateTaskStatus }}>
       {children}
     </TaskContext.Provider>
   );

@@ -1,25 +1,31 @@
+// src/contexts/ImageGenerationContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { ImageGenerationRequest, ImageGenerationResult } from '../types/imageGeneration';
-import { generateImage } from '../services/aiService';
+import { generateImage } from '../services/imageGenerationService';
 
 interface ImageGenerationContextType {
-  generateImageRequest: (params: ImageGenerationRequest) => Promise<ImageGenerationResult>;
-  lastGeneratedImage?: ImageGenerationResult;
+  generateImage: (params: ImageGenerationRequest) => Promise<ImageGenerationResult>;
+  images: ImageGenerationResult[];
+  addImage: (image: ImageGenerationResult) => void;
 }
 
 const ImageGenerationContext = createContext<ImageGenerationContextType | undefined>(undefined);
 
 export const ImageGenerationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [lastGeneratedImage, setLastGeneratedImage] = useState<ImageGenerationResult | undefined>();
+  const [images, setImages] = useState<ImageGenerationResult[]>([]);
 
-  const generateImageRequest = async (params: ImageGenerationRequest): Promise<ImageGenerationResult> => {
+  const addImage = (image: ImageGenerationResult) => {
+    setImages((prevImages) => [...prevImages, image]);
+  };
+
+  const handleGenerateImage = async (params: ImageGenerationRequest): Promise<ImageGenerationResult> => {
     const result = await generateImage(params);
-    setLastGeneratedImage(result);
+    addImage(result);
     return result;
   };
 
   return (
-    <ImageGenerationContext.Provider value={{ generateImageRequest, lastGeneratedImage }}>
+    <ImageGenerationContext.Provider value={{ generateImage: handleGenerateImage, images, addImage }}>
       {children}
     </ImageGenerationContext.Provider>
   );
