@@ -1,29 +1,27 @@
 import { useEffect, useState } from 'react';
+import { getAllWorkflows } from '../services/workflowService';
 import { Workflow } from '../types/workflow';
-import { useWorkflowContext } from '../contexts/WorkflowContext';
-import axios from 'axios';
 
 const useFetchWorkflows = () => {
-  const { addWorkflow } = useWorkflowContext();
+  const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchWorkflows = async () => {
       try {
-        const response = await axios.get<Workflow[]>('/api/workflows');
-        response.data.forEach((workflow) => addWorkflow(workflow));
+        const data = await getAllWorkflows();
+        setWorkflows(data);
       } catch (err) {
         setError('Failed to fetch workflows',err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchWorkflows();
-  }, [addWorkflow]);
+  }, []);
 
-  return { loading, error };
+  return { workflows, loading, error };
 };
 
 export default useFetchWorkflows;

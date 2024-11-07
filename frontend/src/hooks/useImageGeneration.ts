@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { ImageGenerationRequest, ImageGenerationResult } from '../types/imageGeneration';
-import { useImageGenerationContext } from '../contexts/ImageGenerationContext';
-import axios from 'axios';
+import { generateImage } from '../services/aiService';
 
 const useImageGeneration = () => {
-  const { addGeneratedImage } = useImageGenerationContext();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [generatedImage, setGeneratedImage] = useState<ImageGenerationResult | null>(null);
 
-  const generateImage = async (request: ImageGenerationRequest) => {
+  const handleGenerateImage = async (request: ImageGenerationRequest) => {
     setLoading(true);
+    setError(null);
     try {
-      const response = await axios.post<ImageGenerationResult>('/api/generate-image', request);
-      addGeneratedImage(response.data);
+      const result = await generateImage(request);
+      setGeneratedImage(result);
     } catch (err) {
       setError('Image generation failed',err);
     } finally {
@@ -20,7 +20,7 @@ const useImageGeneration = () => {
     }
   };
 
-  return { generateImage, loading, error };
+  return { generatedImage, loading, error, handleGenerateImage };
 };
 
 export default useImageGeneration;
