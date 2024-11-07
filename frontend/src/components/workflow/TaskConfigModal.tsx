@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { TaskType } from '../../types/workflow';
-import { TaskConfig } from '../../types/task';
+import { TaskConfig, AIImageGenerationConfig, ApiTaskConfig } from '../../types/task';
 
 interface TaskConfigModalProps {
   isOpen: boolean;
@@ -13,14 +13,41 @@ interface TaskConfigModalProps {
 const TaskConfigModal: React.FC<TaskConfigModalProps> = ({ isOpen, task, onClose, onSave }) => {
   const [config, setConfig] = useState<TaskConfig>(task.config || {});
 
+  useEffect(() => {
+    setConfig(task.config || {});
+  }, [task]);
+
   const handleSave = () => {
-    onSave({ ...task, config });
-    onClose();
+    if (validateConfig()) {
+      onSave({ ...config });
+      onClose();
+    } else {
+      alert('Please fill in all required fields.');
+    }
+  };
+
+  const validateConfig = (): boolean => {
+    if (task.type === TaskType.AI_IMAGE_GENERATION) {
+      const aiConfig = config as AIImageGenerationConfig;
+      return !!aiConfig.prompt && aiConfig.width > 0 && aiConfig.height > 0;
+    }
+    if (task.type === TaskType.API_CALL) {
+      const apiConfig = config as ApiTaskConfig;
+      return !!apiConfig.endpoint;
+    }
+    return true;
   };
 
   return (
-    <Modal isOpen={isOpen} onRequestClose={onClose} className="task-config-modal">
-      <h2>Configure {task.name}</h2>
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      className="task-config-modal"
+      aria={{
+        labelledby: 'task-config-title',
+      }}
+    >
+      <h2 id="task-config-title">Configure {task.name}</h2>
 
       {task.type === TaskType.AI_IMAGE_GENERATION && (
         <>
@@ -28,7 +55,7 @@ const TaskConfigModal: React.FC<TaskConfigModalProps> = ({ isOpen, task, onClose
           <input
             id="prompt"
             type="text"
-            value={config.prompt || ''}
+            value={(config as AIImageGenerationConfig).prompt || ''}
             onChange={(e) => setConfig({ ...config, prompt: e.target.value })}
             className="input-field"
           />
@@ -37,7 +64,8 @@ const TaskConfigModal: React.FC<TaskConfigModalProps> = ({ isOpen, task, onClose
           <input
             id="width"
             type="number"
-            value={config.width || 512}
+            min="1"
+            value={(config as AIImageGenerationConfig).width || 512}
             onChange={(e) => setConfig({ ...config, width: parseInt(e.target.value, 10) })}
             className="input-field"
           />
@@ -46,7 +74,8 @@ const TaskConfigModal: React.FC<TaskConfigModalProps> = ({ isOpen, task, onClose
           <input
             id="height"
             type="number"
-            value={config.height || 512}
+            min="1"
+            value={(config as AIImageGenerationConfig).height || 512}
             onChange={(e) => setConfig({ ...config, height: parseInt(e.target.value, 10) })}
             className="input-field"
           />
@@ -59,7 +88,7 @@ const TaskConfigModal: React.FC<TaskConfigModalProps> = ({ isOpen, task, onClose
           <input
             id="endpoint"
             type="text"
-            value={config.endpoint || ''}
+            value={(config as ApiTaskConfig).endpoint || ''}
             onChange={(e) => setConfig({ ...config, endpoint: e.target.value })}
             className="input-field"
           />
@@ -68,7 +97,7 @@ const TaskConfigModal: React.FC<TaskConfigModalProps> = ({ isOpen, task, onClose
           <input
             id="apiKey"
             type="text"
-            value={config.apiKey || ''}
+            value={(config as ApiTaskConfig).apiKey || ''}
             onChange={(e) => setConfig({ ...config, apiKey: e.target.value })}
             className="input-field"
           />

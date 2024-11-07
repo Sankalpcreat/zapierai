@@ -1,6 +1,5 @@
 // Visualizes the connections between tasks
 import React from 'react';
-import React from 'react';
 import { TaskNodeType } from './TaskNode';
 
 export interface TaskConnectionType {
