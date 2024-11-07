@@ -1,4 +1,5 @@
 export interface ImageGenerationRequest {
+  id: number;
   prompt: string;
   style?: string;
   width: number;

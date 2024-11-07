@@ -1,43 +1,35 @@
-interface AIImageGenerationResult {
-  imageUrl: string;
+export type TaskStatus = 'pending' | 'in-progress' | 'completed' | 'failed';
+
+interface BaseTaskConfig {
+  id: number;
+  name: string;
+  status: TaskStatus;
+  createdAt: string;
+  updatedAt: string;
 }
 
-interface ApiTaskResult {
-  response: string | object;
-}
-
-interface EmailTaskResult {
-  status: 'sent' | 'failed';
-  timestamp: string;
-}
-
-// Union type for possible task results
-type TaskResult = AIImageGenerationResult | ApiTaskResult | EmailTaskResult;
-
-// Define configuration options specifically for each type of task
-interface AIImageGenerationConfig {
+export interface AIImageGenerationConfig extends BaseTaskConfig {
+  type: 'ai-image-generation';
   prompt: string;
-  style?: string;
   width: number;
   height: number;
 }
 
-interface ApiTaskConfig {
+export interface ApiTaskConfig extends BaseTaskConfig {
+  type: 'api';
   endpoint: string;
-  apiKey?: string;
-  payload?: Record<string, string | number | boolean>;
+  payload?: Record<string, unknown>;
 }
 
-interface EmailTaskConfig {
+export interface EmailTaskConfig extends BaseTaskConfig {
+  type: 'email';
   to: string;
   subject: string;
   body: string;
 }
 
-// Union type for possible task configurations
-type TaskConfig = AIImageGenerationConfig | ApiTaskConfig | EmailTaskConfig;
+export type TaskConfig = AIImageGenerationConfig | ApiTaskConfig | EmailTaskConfig;
 
-// Task creation interface
 export interface TaskCreate {
   workflowId: number;
   name: string;
@@ -45,17 +37,8 @@ export interface TaskCreate {
   config?: TaskConfig;
 }
 
-// Task response interface
-export interface TaskResponse {
+export interface TaskResponse extends TaskCreate {
   id: number;
-  name: string;
-  type: 'ai-image-generation' | 'api' | 'email';
-  config?: TaskConfig;
   status: TaskStatus;
-  result?: TaskResult;
-  createdAt: string;
-  updatedAt: string;
+  result?: Record<string, unknown>;
 }
-
-// Define possible task statuses as a union of literal types
-export type TaskStatus = 'pending' | 'in-progress' | 'completed' | 'failed';

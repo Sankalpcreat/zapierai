@@ -3,10 +3,11 @@ export interface WorkflowCreate {
   description?: string;
 }
 
-export interface WorkflowResponse {
+export interface Workflow {
   id: number;
   name: string;
-  description?: string;
+  description: string;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }

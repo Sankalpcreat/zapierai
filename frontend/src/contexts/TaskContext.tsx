@@ -1,16 +1,16 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Task } from '../types/task';
+import { TaskResponse } from '../types/task';  
 import { getTasksByWorkflowId } from '../services/taskService';
 
 interface TaskContextType {
-  tasks: Task[];
+  tasks: TaskResponse[];
   fetchTasks: (workflowId: number) => Promise<void>;
 }
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
 export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<TaskResponse[]>([]);
 
   const fetchTasks = async (workflowId: number) => {
     try {
