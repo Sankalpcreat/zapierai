@@ -34,12 +34,17 @@ const Home: React.FC = () => {
       />
       <button onClick={handleCreateWorkflow} className="btn btn-primary">Create Workflow</button>
       <ul>
-        {workflows.map((workflow) => (
-          <li key={workflow.id}>
-            <Link to={`/workflows/${workflow.id}`}>{workflow.name}</Link>
-          </li>
-        ))}
-      </ul>
+  {Array.isArray(workflows) ? (
+    workflows.map((workflow) => (
+      <li key={workflow.id}>
+        <Link to={`/workflows/${workflow.id}`}>{workflow.name}</Link>
+      </li>
+    ))
+  ) : (
+    <p>No workflows available.</p>
+  )}
+</ul>
+
     </div>
   );
 };

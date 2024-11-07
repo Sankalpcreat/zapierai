@@ -4,6 +4,7 @@ import { getAllWorkflows } from '../services/workflowService';
 
 interface WorkflowContextType {
   workflows: Workflow[];
+  setWorkflows: React.Dispatch<React.SetStateAction<Workflow[]>>;
   activeWorkflow: Workflow | null;
   setActiveWorkflow: (workflow: Workflow | null) => void;
   fetchWorkflows: () => Promise<void>;
@@ -29,7 +30,7 @@ export const WorkflowProvider: React.FC<{ children: ReactNode }> = ({ children }
   }, []);
 
   return (
-    <WorkflowContext.Provider value={{ workflows, activeWorkflow, setActiveWorkflow, fetchWorkflows }}>
+    <WorkflowContext.Provider value={{ workflows,setWorkflows, activeWorkflow, setActiveWorkflow, fetchWorkflows }}>
       {children}
     </WorkflowContext.Provider>
   );
