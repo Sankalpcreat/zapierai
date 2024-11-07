@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useWorkflowContext } from '../contexts/WorkflowContext';
 import { getWorkflowById } from '../services/workflowService';
-import { fetchTasksByWorkflow } from '../services/taskService';
+import { getTasksByWorkflowId } from '../services/taskService';
 import { Task } from '../types/task';
 import { useParams, Link } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
       if (workflowId) {
         const workflow = await getWorkflowById(parseInt(workflowId));
         setActiveWorkflow(workflow);
-        const taskData = await fetchTasksByWorkflow(parseInt(workflowId));
+        const taskData = await getTasksByWorkflowId(parseInt(workflowId));
         setTasks(taskData);
       }
     };

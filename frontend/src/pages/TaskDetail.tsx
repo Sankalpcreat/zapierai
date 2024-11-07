@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getTaskById, updateTaskStatus } from '../services/taskService';
+import { getTasksByWorkflowId, updateTaskStatus } from '../services/taskService';
 import { Task } from '../types/task';
 
 const TaskDetail: React.FC = () => {
@@ -10,7 +10,7 @@ const TaskDetail: React.FC = () => {
   useEffect(() => {
     const loadTask = async () => {
       if (taskId) {
-        const taskData = await getTaskById(parseInt(taskId));
+        const taskData = await getTasksByWorkflowId(parseInt(taskId));
         setTask(taskData);
       }
     };
