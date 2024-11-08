@@ -1,7 +1,7 @@
 interface Node {
     id: string;
     type: string;
-    data?: object; 
+    data?: object; // or define a more specific type for your data structure
   }
   
   export const validateNodeName = (name: string): boolean => {
